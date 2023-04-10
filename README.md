@@ -1,15 +1,11 @@
-# EC530-P2P-Chat
+# EC530 Peer-to-Peer Chat
 
-Secure Peer to Peer chat by Killian McShane
+A simple, command-line based Peer-to-Peer (P2P) chat application using Python sockets and multithreading.
 
-This is my peer to peer chat consisting of a client and server side. 
-I will be utilizing this project to better understand te capabilities 
-of messaging to specific IP addresses and ports, message encryption and 
-decryption, and uploading messages to a database. 
+# Features
 
-The function of this project will be split amonst four elements:
-  1. Discovery
-  2. Session Initiation
-  3. Data Storage
-  4. Communications Synchronizations
-
+- Command-line interface
+- P2P chat with multiple clients
+- Message storage in MongoDB
+- Timestamps for sent messages
+- Option to end the connection
