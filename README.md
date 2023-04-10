@@ -1,4 +1,5 @@
 # EC530 Peer-to-Peer Chat
+### By: Killian McShane
 
 A simple, command-line based Peer-to-Peer (P2P) chat application using Python sockets and multithreading.
 
