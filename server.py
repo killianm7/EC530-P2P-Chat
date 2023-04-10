@@ -1,29 +1,34 @@
 import socket
 import threading
-from encryption import encrypt_message, decrypt_message
+# from encryption import encrypt_message, decrypt_message
 
 connected_clients = []
 
 def handle_client(client_socket, addr):
     while True:
-        encrypted_msg = client_socket.recv(1024)
-        if not encrypted_msg:
+        msg = client_socket.recv(1024)
+        if not msg:
             break
-
-        decrypted_msg = decrypt_message(encrypted_msg)
+        # encrypted_msg = client_socket.recv(1024)
+        # if not encrypted_msg:
+        #     break
+        
+        # if len(encrypted_msg) > 0:
+        #     decrypted_msg = decrypt_message(encrypted_msg)
 
         for client in connected_clients:
             if client != client_socket:
-                client.send(encrypted_msg)
+                client.send(msg)
+                # client.send(encrypted_msg)
 
-        print(f"Message from {addr}: {decrypted_msg}")
+        print(f"Message from {addr}: {msg}")
 
     client_socket.close()
     connected_clients.remove(client_socket)
 
 def main():
     host = input("Enter the server IP address: ")
-    port = 12345
+    port = int(input("Enter the port #: "))
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))

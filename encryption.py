@@ -2,6 +2,7 @@ from cryptography.fernet import Fernet
 
 # Securely generate and store the key; share it among chat participants.
 key = Fernet.generate_key()
+print(key.decode())
 cipher_suite = Fernet(key)
 
 def encrypt_message(message):
