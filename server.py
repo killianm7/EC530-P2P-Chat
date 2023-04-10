@@ -1,37 +1,42 @@
 import socket
 import threading
+from encryption import encrypt_message, decrypt_message
+
+connected_clients = []
 
 def handle_client(client_socket, addr):
     while True:
-        try:
-            msg = client_socket.recv(1024).decode('utf-8')
-            if not msg:
-                break
-            print(f"{addr}: {msg}")
-        except Exception as e:
-            print(f"Error: {e}")
+        encrypted_msg = client_socket.recv(1024)
+        if not encrypted_msg:
             break
 
+        decrypted_msg = decrypt_message(encrypted_msg)
+
+        for client in connected_clients:
+            if client != client_socket:
+                client.send(encrypted_msg)
+
+        print(f"Message from {addr}: {decrypted_msg}")
+
     client_socket.close()
+    connected_clients.remove(client_socket)
 
 def main():
-    host = '127.0.0.1'
+    host = input("Enter the server IP address: ")
     port = 12345
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
-    server_socket.listen(1)
+    server_socket.listen()
 
-    print(f"Server listening on {host}:{port}\n")
-
-    print(f"Type 'X' to exit chat\n")
+    print("Server is listening...")
 
     while True:
         client_socket, addr = server_socket.accept()
+        connected_clients.append(client_socket)
         print(f"Connection from {addr}")
 
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
-        client_handler.start()
+        threading.Thread(target=handle_client, args=(client_socket, addr)).start()
 
 if __name__ == "__main__":
     main()

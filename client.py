@@ -1,36 +1,26 @@
 import socket
 import threading
+from encryption import encrypt_message, decrypt_message
 
-def receive_messages(client_socket):
+def receive_messages(server_socket):
     while True:
-        try: 
-            msg = client_socket.recv(1024).decode('utf-8')
-            if not msg:
-                break
-            print(msg)
-        except Exception as e:
-            print(f"Error: {e}")
-            break
-
-    client_socket.close()
+        encrypted_msg = server_socket.recv(1024)
+        decrypted_msg = decrypt_message(encrypted_msg)
+        print(f'\nReceived: {decrypted_msg}\n')
 
 def main():
-    host = '127.0.0.1'
+    host = input("Enter the server IP address: ")
     port = 12345
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((host, port))
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.connect((host, port))
 
-    receive_thread = threading.Thread(target=receive_messages, args=(client_socket))
-    receive_thread.start()
+    threading.Thread(target=receive_messages, args=(server_socket,)).start()
 
     while True:
-        msg = input()
-        if msg == "X":
-            break
-        client_socket.send(msg.encode('utf-8'))
-
-    client_socket.close()
+        message = input("Enter your message: ")
+        encrypted_msg = encrypt_message(message)
+        server_socket.send(encrypted_msg)
 
 if __name__ == "__main__":
     main()
